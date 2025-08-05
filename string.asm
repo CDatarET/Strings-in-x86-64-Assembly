@@ -79,17 +79,22 @@ _start:
 	rw 1, 1, string3, 50
 	rw 1, 1, newLine, newLineLen
 	
-	xor rsi, rsi
-	mov rsi, string3
-	mov bl, 00
-	findSpaces:
-		mov al, [rsi]
-		cmp al, 20h
-		jne notSpace
-		inc bl
-	notSpace:
-		dec byte[l3]
-		jnz findSpaces
+    xor rax,rax
+    mov rax, [l1]
+    add rax, [l2]
+    mov [l3], rax
+	mov cl, [l3]
+    mov rsi, string3
+    xor bl, bl
+    findSpaces:
+        mov al, [rsi]
+        cmp al, 20h
+        jne notSpace
+        inc bl
+    notSpace:
+        inc rsi
+        dec cl
+        jnz findSpaces
 	
 	rw 1, 1, msg4, msgLen4
 	rw 1, 1, spaces, 3
