@@ -35,7 +35,12 @@ section .bss
 	string3 resb 50		;third string (concatenated string)
 	l3 resb 50			;length of third string
 	
-	spaces resb 3		;spaces in string
+    numString resb 4    ;convert spaces to string
+
+    words resb 3        ;words in string
+    wordString resb 4   ;convert words to string
+
+
 
 section .text
     global _start
@@ -83,7 +88,52 @@ _start:
     mov rax, [l1]
     add rax, [l2]
     mov [l3], rax
+	mov cl, [l3]
+    mov rsi, string3
+    xor bl, bl
+    findSpaces:
+        mov al, [rsi]
+        cmp al, 20h
+        jne notSpace
+        inc bl
+    notSpace:
+        inc rsi
+        dec cl
+        jnz findSpaces
 	
+    mov [words], bl
+    inc qword [words]
+
+    movzx rax, bl
+    mov rcx, 10
+    xor rdx, rdx
+    div rcx
+    add dl, '0'
+    mov [numString+1], dl
+    movzx rax, al
+    xor rdx, rdx
+    div rcx
+    add dl, '0'
+    mov [numString], dl
+
 	rw 1, 1, msg4, msgLen4
-	rw 1, 1, spaces, 3
+	rw 1, 1, numString, 3
+    rw 1, 1, newLine, newLineLen
+
+    mov bl, [words]
+    movzx rax, bl
+    mov rcx, 10
+    xor rdx, rdx
+    div rcx
+    add dl, '0'
+    mov [wordString+1], dl
+    movzx rax, al
+    xor rdx, rdx
+    div rcx
+    add dl, '0'
+    mov [wordString], dl
+
+    rw 1, 1, msg5, msgLen5
+	rw 1, 1, wordString, 3
+    rw 1, 1, newLine, newLineLen
 	rw 60, 0, 0, 0
